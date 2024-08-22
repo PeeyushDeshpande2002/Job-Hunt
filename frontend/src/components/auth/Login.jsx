@@ -42,12 +42,13 @@ const Login = () => {
     e.preventDefault();
     dispatch(setLoading(true));
     try {
-      const res = await fetch(`${USER_API_ENDPOINT}/login`, {
+      const res = await fetch('http://localhost:8000/api/user/login', {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(input),
+        credentials: 'include',
       });
       if (res.ok) {
         const data = await res.json();

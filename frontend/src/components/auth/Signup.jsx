@@ -62,7 +62,8 @@ const Signup = () => {
         // headers : {
         //     'Content-Type' : 'multipart/form-data'
         // },
-        body : formData
+        body : formData,
+        credentials: 'include',
       });
      
       

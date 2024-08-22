@@ -10,17 +10,18 @@ import jobRoute from './routes/job.route.js';
 import applicationRoute from './routes/application.route.js'
 dotenv.config({})
 const app = express();
-
-
-app.use(express.json());
-app.use(express.urlencoded({extended : true}));
-app.use(cookieParser());
 const corsOptions = {
-    origin : '*',//http://localhost:5173/
-    credentials : true,
+    origin : 'http://localhost:5173',
     methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials : true,
 }
 app.use(cors(corsOptions));
+app.use(express.json());
+app.use(express.urlencoded({extended : true}));
+
+app.use(cookieParser());
+
 app.use('/api/user', userRoute);
 app.use('/api/company', companyRoute);
 app.use('/api/job', jobRoute);

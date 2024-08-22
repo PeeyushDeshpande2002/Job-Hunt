@@ -3,6 +3,8 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import {User} from '../models/user.model.js'
 import cookie from "cookie-parser";
+import getDataUri from "../utils/dataURI.js";
+import cloudinary from "../utils/cloudinary.js";
 export const register = async (req, res) => {
   try {
     const { fullname, email, phone, password, role } = req.body;
@@ -45,6 +47,8 @@ export const register = async (req, res) => {
 export const login = async (req, res) => {
   try {
     const { email, password, role } = req.body;
+    //console.log(email, password, role );
+    
     if (!email || !password || !role) {
       return res.status(400).json({
         message: "Please Enter the credentials",
@@ -114,17 +118,12 @@ export const logout = async (req, res) => {
 export const updateProfile = async (req, res) => {
   try {
     const { fullname, email, phone, bio, skills } = req.body;
-    console.log(fullname, email, phone, bio, skills );
-    
-    // if (!fullname || !email || !phone || !bio || !skills) {
-    //   return res.status(400).json({
-    //     message: "Something is missing",
-    //     success: false,
-    //   });
-    // };
+   // console.log(fullname, email, phone, bio, skills );
     const file = req.file
+    //cloudinary set up
+    const fileUri = getDataUri(file);
+    const cloudResponse = await cloudinary.uploader.upload(fileUri.content);
 
-    //cloudinary set up afterwards
     let skillsArray;
     if(skills){
       skillsArray = skills.split(",");
@@ -144,10 +143,11 @@ export const updateProfile = async (req, res) => {
     if(bio)user.profile.bio = bio;
     if(skillsArray)user.profile.skills = skillsArray;
     //resume code afterwards 
-
-    const userUpdated = await user.save();
-    if(userUpdated)console.log("User updated");
-    
+    if(cloudResponse){
+      user.profile.resume = cloudResponse.secure_url;//save the cloudinary url 
+      user.profile.resumeOriginalName = file.originalname;//save the original file name
+    }
+    await user.save();
     user = {
         _id: user._id,
         fullname: user.fullname,
@@ -155,7 +155,7 @@ export const updateProfile = async (req, res) => {
         phone: user.phone,
         profile: user.profile,
       };
-
+      
       return res.status(200).json({
         message : 'Profile updated successfully',
         user,

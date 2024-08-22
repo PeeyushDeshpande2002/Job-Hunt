@@ -29,21 +29,18 @@ const UpdateProfileDialog = ({ open, setOpen }) => {
     const formData = new FormData();
     formData.append("fullname", input.fullname);
     formData.append("email", input.email);
-    formData.append("phone", input.phoneNumber);
+    formData.append("phone", input.phone);
     formData.append("bio", input.bio);
     formData.append("skills", input.skills);
     if (input.file) {
       formData.append("file", input.file);
     }
-    console.log('input',input);
-    
+    // console.log('input',input);
     try {
       const res = await fetch("http://localhost:8000/api/user/profile/update", {
-        method: "POST",
-        // headers : {
-        //     'Content-Type' : 'multipart/form-data'
-        // },
+        method: 'POST',
         body: formData,
+        credentials: 'include',
       });
       if (res.ok) {
         const data = await res.json();
@@ -74,8 +71,8 @@ const UpdateProfileDialog = ({ open, setOpen }) => {
           >
             <TextField
               label="Name"
-              id="name"
-              name="name"
+              id="fullname"
+              name="fullname"
               type="text"
               value={input.fullname}
               onChange={changeEventHandler}
@@ -92,8 +89,8 @@ const UpdateProfileDialog = ({ open, setOpen }) => {
             />
             <TextField
               label="Phone Number"
-              id="number"
-              name="number"
+              id="phone"
+              name="phone"
               value={input.phone}
               onChange={changeEventHandler}
               fullWidth
