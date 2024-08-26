@@ -3,8 +3,11 @@ import FilterCard from './FilterCard'
 import Job from './Job'
 import { Container, Box, Grid, Paper, Typography } from '@mui/material';
 import { motion } from 'framer-motion';
-const jobsArray = [1, 2, 3, ]
+import { useSelector } from 'react-redux';
+import store from '../redux/store';
 const Jobs = () => {
+    const {allJobs} = useSelector((store) => store.job);
+    console.log(allJobs);
     return (
         <Container maxWidth="lg" sx={{ mt: 5 }}>
             <Box display="flex" gap={2}>
@@ -13,7 +16,7 @@ const Jobs = () => {
                 </Box>
 
                 {
-                    jobsArray.length <= 0 ? (
+                    allJobs.length <= 0 ? (
                         <Typography variant="body1">Job not found</Typography>
                     ) : (
                         <Box
@@ -26,7 +29,7 @@ const Jobs = () => {
                         >
                             <Grid container spacing={2}>
                                 {
-                                    jobsArray.map((job) => (
+                                    allJobs.map((job) => (
                                         <Grid item xs={12} sm={6} md={4} key={job?._id}>
                                             <motion.div
                                                 initial={{ opacity: 0, x: 100 }}

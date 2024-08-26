@@ -14,6 +14,12 @@ import BookmarkIcon from "@mui/icons-material/Bookmark";
 import { useNavigate } from "react-router-dom";
 const Job = ({ job }) => {
   const navigate = useNavigate();
+  const daysAgoFunction = (mongoDBTime) => {
+    const createdAt = new Date(mongoDBTime);
+    const currentTime = new Date();
+    const timeDiff = currentTime - createdAt;
+    return Math.floor(timeDiff/(1000*24*60*60));
+  }
   return (
     <Card
       sx={{
@@ -27,8 +33,7 @@ const Job = ({ job }) => {
       <CardContent >
         <Box display="flex" justifyContent="space-between" alignItems="center">
           <Typography variant="body2" color="textSecondary">
-            {/* {daysAgoFunction(job?.createdAt) === 0 ? "Today" : `${daysAgoFunction(job?.createdAt)} days ago`} */}
-            2 days ago
+            {daysAgoFunction(job?.createdAt) === 0 ? "Today" : `${daysAgoFunction(job?.createdAt)}`} days ago
           </Typography>
           <IconButton size="small" color="primary">
             <BookmarkIcon />
@@ -39,34 +44,32 @@ const Job = ({ job }) => {
           <Avatar src={job?.company?.logo} alt={job?.company?.name} />
           <Box>
             <Typography variant="h6">
-                {/* {job?.company?.name}  */}
-                    Webthoughts Softwares
+                {job?.company?.name} 
             </Typography>
             <Typography variant="body2" color="textSecondary">
-              India
+              {job?.location}
             </Typography>
           </Box>
         </Box>
 
         <Box mb={2}>
           <Typography variant="h6" fontWeight="bold">
-            {/* {job?.title} */}Software Developer
+            {job?.title}
           </Typography>
           <Typography variant="body2" color="textSecondary">
-            {/* {job?.description} */}Generate Lorem Ipsum placeholder text for
-            use in your graphic, print and web layouts
+            {job?.description}
           </Typography>
         </Box>
 
         <Box display="flex" alignItems="center" gap={1.2} mt={1}>
-          <Chip label={"1 Positions"} color="primary" variant="outlined" />
+          <Chip label={`${job?.position} Positions`} color="primary" variant="outlined" />
           <Chip
-            label={`Part time`}
+            label={`${job?.jobType}`}
             sx={{ color: "#F83002", fontWeight: "bold" }}
             variant="outlined"
           />
           <Chip
-            label={` 10 LPA`}
+            label={` ${job?.salary} LPA`}
             sx={{ color: "#7209b7", fontWeight: "bold" }}
             variant="outlined"
           />

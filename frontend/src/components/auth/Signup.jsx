@@ -181,7 +181,7 @@ const Signup = () => {
             justifyContent="space-between"
             sx={{ my: 2 }}
           >
-            <InputLabel htmlFor="profile">Profile</InputLabel>
+            <InputLabel htmlFor="profile">Profile Photo</InputLabel>
             <TextField
               id="profile"
               type="file"

@@ -1,7 +1,70 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Typography, Box, Button, Badge, Divider, Chip } from "@mui/material";
-const isApplied = true;
+import { useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { setSingleJob } from "../redux/jobSlice";
+import { APPLICATION_API_ENDPOINT, JOB_API_ENDPOINT } from "../utils/constant";
+import { useSnackbar } from "notistack";
+
 const JobDescription = () => {
+  const params = useParams();
+  const jobId = params.id;
+  const dispatch = useDispatch();
+  const { enqueueSnackbar } = useSnackbar();
+  const { singleJob } = useSelector((store) => store.job);
+  const { user } = useSelector((store) => store.auth);
+  const isInitiallyApplied =
+    singleJob?.applications?.some(
+      (application) => application.applicant === user?._id
+    ) || false;
+  const [isApplied, setIsApplied] = useState(isInitiallyApplied);
+  useEffect(() => {
+    const fetchSingleJob = async () => {
+      try {
+        const res = await fetch(`${JOB_API_ENDPOINT}/get/${jobId}`, {
+          method: "GET",
+          credentials: "include",
+        });
+        if (res.ok) {
+          const data = await res.json();
+          dispatch(setSingleJob(data.job));
+          setIsApplied(
+            data.job.applications.some(
+              (application) => application.applicant === user?._id
+            )
+          );
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchSingleJob();
+  }, [jobId, dispatch, user?._id]);
+  const applyJobHandler = async () => {
+    try {
+      const res = await fetch(`${APPLICATION_API_ENDPOINT}/apply/${jobId}`, {
+        method: "GET",
+        credentials: "include",
+      });
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.message || "Something went wrong!");
+      }
+      if (res.ok) {
+        const data = await res.json();
+        setIsApplied(true);
+        const updatedSingleJob = {
+          ...singleJob,
+          applications: [...singleJob.applications, { applicant: user?._id }],
+        };
+        dispatch(setSingleJob(updatedSingleJob));
+        enqueueSnackbar(data.message, { variant: "success" });
+      }
+    } catch (error) {
+      console.log(error.message);
+      enqueueSnackbar(error.message, { variant: "error" });
+    }
+  };
   return (
     <Box maxWidth="xl" mx="auto" my={4}>
       <Box
@@ -12,17 +75,21 @@ const JobDescription = () => {
       >
         <Box>
           <Typography variant="h5" fontWeight="bold">
-            {/* {singleJob?.title} */}Software Developer
+            {singleJob?.title}
           </Typography>
           <Box display="flex" alignItems="center" gap={1.2} mt={1}>
-            <Chip label={"1 Positions"} color="primary" variant="outlined" />
             <Chip
-              label={`Part time`}
+              label={`${singleJob?.position} Positions`}
+              color="primary"
+              variant="outlined"
+            />
+            <Chip
+              label={`${singleJob?.jobType}`}
               sx={{ color: "#F83002", fontWeight: "bold" }}
               variant="outlined"
             />
             <Chip
-              label={` 10 LPA`}
+              label={` ${singleJob?.salary} LPA`}
               sx={{ color: "#7209b7", fontWeight: "bold" }}
               variant="outlined"
             />
@@ -62,7 +129,7 @@ const JobDescription = () => {
             fontWeight="normal"
             color="text.secondary"
           >
-            {/* {singleJob?.title} */}Title
+            {singleJob?.title}
           </Typography>
         </Typography>
         <Typography variant="body1" fontWeight="bold">
@@ -72,7 +139,7 @@ const JobDescription = () => {
             fontWeight="normal"
             color="text.secondary"
           >
-            {/* {singleJob?.location} */}Pune
+            {singleJob?.location}
           </Typography>
         </Typography>
         <Typography variant="body1" fontWeight="bold">
@@ -82,17 +149,7 @@ const JobDescription = () => {
             fontWeight="normal"
             color="text.secondary"
           >
-            {/* {singleJob?.description} */} Join our Operations team as a
-            Junior Developer and contribute to the scaling of our world-class
-            SaaS recruiting software. In this role, you’ll tackle production
-            issues, assist the Customer Support team, and analyze errors. You’ll
-            develop automation software for operational needs and create
-            monitoring scripts for integrations. This is an ideal opportunity
-            for someone with a year of software development or operations
-            engineering experience, keen to grow in a dynamic, team-oriented
-            environment. You’ll need a solid foundation in databases, SQL, and
-            willingness to learn Ruby on Rails. Be part of a team passionate
-            about delivering quality and excellence.
+            {singleJob?.description}
           </Typography>
         </Typography>
         <Typography variant="body1" fontWeight="bold">
@@ -102,7 +159,7 @@ const JobDescription = () => {
             fontWeight="normal"
             color="text.secondary"
           >
-            {/* {singleJob?.experience}  */}5 yrs
+            {singleJob?.experience}
           </Typography>
         </Typography>
         <Typography variant="body1" fontWeight="bold">
@@ -112,8 +169,7 @@ const JobDescription = () => {
             fontWeight="normal"
             color="text.secondary"
           >
-            {/* {singleJob?.salary} */}
-            10 LPA
+            {singleJob?.salary}LPA
           </Typography>
         </Typography>
         <Typography variant="body1" fontWeight="bold">
@@ -123,7 +179,7 @@ const JobDescription = () => {
             fontWeight="normal"
             color="text.secondary"
           >
-            {/* {singleJob?.applications?.length} */}400
+            {singleJob?.applications?.length}
           </Typography>
         </Typography>
         <Typography variant="body1" fontWeight="bold">
@@ -133,7 +189,7 @@ const JobDescription = () => {
             fontWeight="normal"
             color="text.secondary"
           >
-            {/* {singleJob?.createdAt.split("T")[0]} */}21.08.2024
+            {singleJob?.createdAt.split("T")[0]}
           </Typography>
         </Typography>
       </Box>

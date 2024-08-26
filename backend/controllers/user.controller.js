@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
 // import User from "../models/user.model.js";
 import bcrypt from "bcryptjs";
-import {User} from '../models/user.model.js'
+import { User } from "../models/user.model.js";
 import cookie from "cookie-parser";
 import getDataUri from "../utils/dataURI.js";
 import cloudinary from "../utils/cloudinary.js";
@@ -10,8 +10,11 @@ export const register = async (req, res) => {
     const { fullname, email, phone, password, role } = req.body;
     console.log(fullname, email, phone, password, role);
     const file = req.file;
-    
-    
+    //cloudinary set up
+
+    const fileUri = getDataUri(file);
+    const cloudResponse = await cloudinary.uploader.upload(fileUri.content);
+
     if (!fullname || !email || !phone || !password || !role) {
       return res.status(400).json({
         message: "Something is missing!",
@@ -19,8 +22,7 @@ export const register = async (req, res) => {
       });
     }
     const user = await User.findOne({ email });
-    
-    
+
     if (user) {
       return res.status(400).json({
         message: "User exist with this email",
@@ -33,7 +35,10 @@ export const register = async (req, res) => {
       email,
       phone,
       password: hashedpassword,
-      role
+      role,
+      profile: {
+        profilePhoto: cloudResponse?.secure_url,
+      },
     });
     return res.status(201).json({
       message: "Account created successfully",
@@ -48,7 +53,7 @@ export const login = async (req, res) => {
   try {
     const { email, password, role } = req.body;
     //console.log(email, password, role );
-    
+
     if (!email || !password || !role) {
       return res.status(400).json({
         message: "Please Enter the credentials",
@@ -85,6 +90,7 @@ export const login = async (req, res) => {
       _id: user._id,
       fullname: user.fullname,
       email: user.email,
+      role: user.role,
       phone: user.phone,
       profile: user.profile,
     };
@@ -118,16 +124,16 @@ export const logout = async (req, res) => {
 export const updateProfile = async (req, res) => {
   try {
     const { fullname, email, phone, bio, skills } = req.body;
-   // console.log(fullname, email, phone, bio, skills );
-    const file = req.file
+    // console.log(fullname, email, phone, bio, skills );
+    const file = req.file;
     //cloudinary set up
     const fileUri = getDataUri(file);
     const cloudResponse = await cloudinary.uploader.upload(fileUri.content);
 
     let skillsArray;
-    if(skills){
+    if (skills) {
       skillsArray = skills.split(",");
-  }
+    }
     const userId = req.id;
     let user = await User.findById(userId);
     if (!user) {
@@ -137,30 +143,30 @@ export const updateProfile = async (req, res) => {
       });
     }
     //updating Data
-   if(fullname) user.fullname = fullname;
-    if(email)user.email = email;
-   if(phone) user.phone = phone;
-    if(bio)user.profile.bio = bio;
-    if(skillsArray)user.profile.skills = skillsArray;
-    //resume code afterwards 
-    if(cloudResponse){
-      user.profile.resume = cloudResponse.secure_url;//save the cloudinary url 
-      user.profile.resumeOriginalName = file.originalname;//save the original file name
+    if (fullname) user.fullname = fullname;
+    if (email) user.email = email;
+    if (phone) user.phone = phone;
+    if (bio) user.profile.bio = bio;
+    if (skillsArray) user.profile.skills = skillsArray;
+    //resume code afterwards
+    if (cloudResponse) {
+      user.profile.resume = cloudResponse.secure_url; //save the cloudinary url
+      user.profile.resumeOriginalName = file.originalname; //save the original file name
     }
     await user.save();
     user = {
-        _id: user._id,
-        fullname: user.fullname,
-        email: user.email,
-        phone: user.phone,
-        profile: user.profile,
-      };
-      
-      return res.status(200).json({
-        message : 'Profile updated successfully',
-        user,
-        success : true
-      })
+      _id: user._id,
+      fullname: user.fullname,
+      email: user.email,
+      phone: user.phone,
+      profile: user.profile,
+    };
+
+    return res.status(200).json({
+      message: "Profile updated successfully",
+      user,
+      success: true,
+    });
   } catch (error) {
     console.log(error);
   }

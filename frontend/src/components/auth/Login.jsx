@@ -34,10 +34,6 @@ const Login = () => {
     setInput({ ...input, [e.target.name]: e.target.value });
   };
 
-  const changeFileHandler = (e) => {
-    setInput({ ...input, profile: e.target.files[0] });
-  };
-
   const submitHandler = async (e) => {
     e.preventDefault();
     dispatch(setLoading(true));

@@ -1,8 +1,11 @@
 import React from 'react'
 import { Container, Typography, Grid, Box } from '@mui/material';
 import LatestJobCards from './LatestJobCards'; 
-const allJobs = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+import { useSelector } from 'react-redux';
+
 const LatestJobs = () => {
+    const {allJobs} = useSelector(store => store.job);
+
   return (
     <Container maxWidth="lg" sx={{ my: 10 }}>
             <Typography variant="h4" component="h1" fontWeight="bold">

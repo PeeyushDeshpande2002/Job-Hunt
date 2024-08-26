@@ -22,9 +22,10 @@ import { setUser } from "../../redux/authSlice";
 const Navbar = () => {
   const [anchorEl, setAnchorEl] = useState(null);
   const { user } = useSelector((store) => store.auth);
+  //const user = false;
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const {enqueueSnackbar} = useSnackbar();
+  const { enqueueSnackbar } = useSnackbar();
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -34,11 +35,14 @@ const Navbar = () => {
   };
 
   const logoutHandler = async () => {
+    
     try {
       const res = await fetch("http://localhost:8000/api/user/logout", {
         methods: "GET",
         credentials: "include",
       });
+      //console.log(res);
+      
       if (res.ok) {
         const data = await res.json();
         dispatch(setUser(null));
@@ -47,7 +51,7 @@ const Navbar = () => {
       }
     } catch (error) {
       console.log(error);
-      enqueueSnackbar("Logout failed!", { variant: "error" })
+      enqueueSnackbar("Logout failed!", { variant: "error" });
     }
   };
   return (
@@ -195,7 +199,7 @@ const Navbar = () => {
                       color: "#757575",
                     }}
                   >
-                    {user && (
+                    {user && user.role === "student" && (
                       <MenuItem
                         component={Link}
                         to="/profile"
