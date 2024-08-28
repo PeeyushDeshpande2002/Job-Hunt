@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Container,
   TextField,
@@ -30,10 +30,15 @@ const Signup = () => {
     profile: null,
   });
  // const [loading, setLoading] = useState(false);
- const {loading} = useSelector(store=>store.auth);
+ const {loading, user} = useSelector(store=>store.auth);
  const dispatch = useDispatch();
   const {enqueueSnackbar} = useSnackbar();
   const navigate = useNavigate();
+  useEffect(()=>{
+    if(user){
+      navigate('/')
+    }
+  })
   const changeEventHandler = (e) => {
     setInput({ ...input, [e.target.name]: e.target.value });
   };

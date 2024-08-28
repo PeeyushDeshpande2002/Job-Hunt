@@ -39,7 +39,7 @@ export const postJob = async (req, res) => {
       jobType,
       experienceLevel,
       position,
-      company :companyId,
+      company: companyId,
       created_by: userID,
     });
     return res.status(201).json({
@@ -55,15 +55,19 @@ export const postJob = async (req, res) => {
 export const getAllJob = async (req, res) => {
   try {
     const keyword = req.query.keyword || "";
+    
     const query = {
-      $or: [
-        { title: { $regex: keyword, $options: "i" } },
-        { description: { $regex: keyword, $options: "i" } },
-      ],
+        $or: [
+            { title: { $regex: keyword, $options: "i" } },
+            { description: { $regex: keyword, $options: "i" } },
+        ]
     };
-    const jobs = await Job.find(query).populate({
-        path : 'company'
-    }).sort({createdAt : -1});
+
+    const jobs = await Job.find(query)
+      .populate({
+        path: "company",
+      })
+      .sort({ createdAt: -1 });
     if (!jobs) {
       return res.status(404).json({
         message: "Job not found",
@@ -83,7 +87,7 @@ export const getJobById = async (req, res) => {
   try {
     const jobId = req.params.id;
     const job = await Job.findById(jobId).populate({
-      path : 'applications'
+      path: "applications",
     });
     if (!job) {
       return res.status(404).json({
@@ -104,8 +108,8 @@ export const getAdminJobs = async (req, res) => {
   try {
     const adminId = req.id;
     const jobs = await Job.find({ created_by: adminId }).populate({
-      path : 'company', 
-      createdAt : -1
+      path: "company",
+      createdAt: -1,
     });
     if (!jobs) {
       return res.status(404).json({

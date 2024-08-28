@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Container,
   TextField,
@@ -26,13 +26,19 @@ const Login = () => {
     password: "",
     role: "",
   });
-  const { loading } = useSelector((store) => store.auth);
+  const { user, loading } = useSelector((store) => store.auth);
   const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const changeEventHandler = (e) => {
     setInput({ ...input, [e.target.name]: e.target.value });
   };
+
+  useEffect(()=>{
+    if(user){
+      navigate('/')
+    }
+  })
 
   const submitHandler = async (e) => {
     e.preventDefault();

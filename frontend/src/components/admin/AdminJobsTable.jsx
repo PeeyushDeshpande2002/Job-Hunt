@@ -8,8 +8,6 @@ import {
   TableRow,
   Paper,
   IconButton,
-  Menu,
-  MenuItem,
 } from "@mui/material";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import EditIcon from "@mui/icons-material/Edit";
@@ -65,14 +63,14 @@ const AdminJobsTable = () => {
                 <TableCell align="right">
                   <IconButton
                     onClick={() => {
-                      navigate(`/admin/companies/${job._id}`);
+                      navigate(`/admin/jobs/${job._id}`);
                     }}
                   >
                     <EditIcon fontSize="xs" />
                   </IconButton>
                   <IconButton
                     onClick={() =>
-                      navigate(`/admin/companies/${job._id}/applicants`)
+                      navigate(`/admin/jobs/${job._id}/applicants`)
                     }
                   >
                     <VisibilityIcon fontSize="xs" />

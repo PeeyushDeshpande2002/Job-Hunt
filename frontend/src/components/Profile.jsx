@@ -16,11 +16,12 @@ import { MailOutline as Mail, Phone as Contact, Edit as Pen, Store } from '@mui/
 import store from '../redux/store';
 import AppliedJobTable from './AppliedJobTable';
 import UpdateProfileDialog from './UpdateProfileDialog';
+import useGetAppliedJobs from '../hooks/useGetAppliedJobs';
 const isResume = true;
 const Profile = () => {
   const {user} = useSelector(store => store.auth);
   const[open, setOpen] = useState(false);
-  
+  useGetAppliedJobs();
   return (
     <Box>
         <Container maxWidth="md">

@@ -25,7 +25,7 @@ const AdminJobs = () => {
       >
         <TextField
           variant="outlined"
-          placeholder="Filter by name, role"
+          placeholder="Filter by company, role"
           size="small"
           onChange={(e) => setInput(e.target.value)}
         />

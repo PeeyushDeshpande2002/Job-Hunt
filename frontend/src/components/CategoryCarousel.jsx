@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 // import { setSearchedQuery } from '@/redux/jobSlice';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
+import { setSearchedQuery } from '../redux/jobSlice';
 
 const category = [
     "Frontend Developer",
@@ -16,13 +17,13 @@ const category = [
 
 const CategoryCarousel = () => {
     // const dispatch = useDispatch();
-    const navigate = useNavigate();
-
-    const searchJobHandler = (query) => {
-        // dispatch(setSearchedQuery(query));
-        // navigate("/browse");
+    const dispatch = useDispatch();
+    const navigate = useNavigate()
+    const searchJobHandler = (cat) => {
+        // Handle the job search logic
+        dispatch(setSearchedQuery(cat));
+        navigate('/browse')
     };
-
     // Placeholder Carousel component
     const [activeIndex, setActiveIndex] = React.useState(0);
 

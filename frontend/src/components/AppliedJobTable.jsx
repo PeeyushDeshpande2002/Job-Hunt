@@ -1,7 +1,10 @@
 import React from 'react'
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Typography, Chip } from '@mui/material';
-const allAppliedJobs = [1, 2]
+import { useSelector } from 'react-redux';
+
 const AppliedJobTable = () => {
+  const {appliedJobs} = useSelector(store => store.job);
+  
     return (
         <TableContainer component={Paper}>
           <Table>
@@ -16,29 +19,28 @@ const AppliedJobTable = () => {
             </TableHead>
             <TableBody>
               {
-                allAppliedJobs.length <= 0 ? (
+                appliedJobs.length <= 0 ? (
                   <TableRow>
                     <TableCell colSpan={4}>
                       <Typography variant="body2" align="center">You haven't applied to any jobs yet.</Typography>
                     </TableCell>
                   </TableRow>
                 ) : (
-                  allAppliedJobs.map((appliedJob) => (
+                  appliedJobs.map((appliedJob) => (
                     <TableRow key={appliedJob._id}>
                       <TableCell>
-                        {/* {appliedJob?.createdAt?.split("T")[0]}  */}
-                        21.08.24</TableCell>
+                        {appliedJob?.createdAt?.split("T")[0]} 
+                       </TableCell>
                       <TableCell>
-                        {/* {appliedJob.job?.title} */}
-                        Software Developer</TableCell>
+                        {appliedJob.job?.title}
+                        </TableCell>
                       <TableCell>
-                        {/* {appliedJob.job?.company?.name} */}
-                        WebThoughts</TableCell>
+                        {appliedJob.job?.company?.name}
+                       </TableCell>
                       <TableCell align="right">
                         <Chip
-                          label=
-                        //   {appliedJob.status.toUpperCase()}
-                                {'accepted'}
+                          label= 
+                          {appliedJob.status.toUpperCase()}
                           style={{
                             backgroundColor: appliedJob?.status === "rejected" ? 'red' :
                               appliedJob?.status === 'pending' ? 'gray' : 'green',

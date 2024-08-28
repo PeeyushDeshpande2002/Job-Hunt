@@ -1,12 +1,17 @@
 import React, { useState } from 'react'
 import { Container, Box, Typography, InputBase, Button, Paper } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
-
+import { useDispatch } from 'react-redux';
+import { setSearchedQuery } from '../redux/jobSlice';
+import {useNavigate} from 'react-router-dom'
 const HeroSection = () => {
     const [query, setQuery] = useState('');
-
+    const dispatch = useDispatch();
+    const navigate = useNavigate()
     const searchJobHandler = () => {
         // Handle the job search logic
+        dispatch(setSearchedQuery(query));
+        navigate('/browse')
     };
 
     return (

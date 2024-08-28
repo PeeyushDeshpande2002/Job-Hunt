@@ -2,7 +2,7 @@ import React from 'react'
 import { Container, Typography, Grid, Box } from '@mui/material';
 import LatestJobCards from './LatestJobCards'; 
 import { useSelector } from 'react-redux';
-
+import { motion } from "framer-motion";
 const LatestJobs = () => {
     const {allJobs} = useSelector(store => store.job);
 
@@ -18,9 +18,11 @@ const LatestJobs = () => {
                         <Typography variant="body1">No Job Available</Typography>
                     ) : (
                         allJobs.slice(0, 6).map((job) => (
+                            
                             <Grid item xs={12} sm={6} md={4} key={job._id}>
                                 <LatestJobCards job={job} />
                             </Grid>
+                           
                         ))
                     )
                 }
